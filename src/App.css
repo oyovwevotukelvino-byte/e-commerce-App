@@ -25,6 +25,7 @@
 .APP{
   text-align: center;
   margin-top: 50px;
+  margin-bottom: 60px;
   width: 100%;
 }
 .footer{
@@ -221,4 +222,33 @@ input[type="text"]:focus{
 }
  .social-icons .icon:hover {
   color: #0f101c;
+}
+@media (max-width: 480px) {
+  .products {
+    grid-template-columns: 1fr;
+    margin-top: 250px;
+  }
+  .navbar { 
+   flex-direction: column; 
+   text-align: center; 
+   padding: 5px;
+  } 
+  .navbar input {
+   margin-top: 0px;
+   width: 60%;
+   padding: 15px; 
+  }
+  .footer { flex-direction: column; 
+    font-size: 12px;
+   }
+   .logout-button {
+  margin-left: 30px;
+  padding: 5px 35px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ff4c4c;
+  color: white;
+  cursor: pointer;
+  margin-right: 28px;
+}
 }
