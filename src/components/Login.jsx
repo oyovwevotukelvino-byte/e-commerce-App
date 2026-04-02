@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import Register from "./Register";
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -31,6 +33,14 @@ function Login({ onLogin }) {
       });
   };
 
+  if (showRegister) {
+    return (
+      <Register
+        onSwitchToLogin={() => setShowRegister(false)}
+      />
+    );
+  }
+
   return (
     <div className="login">
       <div className="login-inputs">
@@ -51,6 +61,12 @@ function Login({ onLogin }) {
           <button type="submit">Login</button>
         </form>
         {message && <p>{message}</p>}
+        <p className="switch-text">
+          Don't have an account?{" "}
+          <button type="button" onClick={() => setShowRegister(true)} className="link-btn">
+            Register
+          </button>
+        </p>
       </div>
     </div>
   );

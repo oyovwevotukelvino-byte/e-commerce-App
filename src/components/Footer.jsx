@@ -7,7 +7,7 @@ function Footer( ) {
       <p>"Shopping App Copyright © 2026 Digital Mall All rights reserved"</p>
       <div className="social-icons">
         
-        <InstagramIcon  className="icon" instagram />
+        <InstagramIcon  className="icon" />
         <FacebookIcon className="icon"/>
         <TwitchIcon className="icon"/>
         <LinkedinIcon className="icon"/>
