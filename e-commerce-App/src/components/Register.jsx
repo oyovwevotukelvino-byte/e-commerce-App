@@ -4,7 +4,6 @@ function Register({ onSwitchToLogin }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("https://i.pravatar.cc/150?img=3");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,13 +12,12 @@ function Register({ onSwitchToLogin }) {
     setMessage("");
     setIsLoading(true);
 
-    const userData = {
-      name,
-      email,
-      password,
-      avatar,
-    };
-
+   const userData = {
+     name,
+     email,
+     password,
+     avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+  };
     fetch("https://api.escuelajs.co/api/v1/users/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -75,12 +73,7 @@ function Register({ onSwitchToLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <input
-            type="text"
-            placeholder="Avatar URL (optional)"
-            value={avatar}
-            onChange={(e) => setAvatar(e.target.value)}
-          />
+          
           <button type="submit" disabled={isLoading}>
             {isLoading ? "Creating..." : "Register"}
           </button>
