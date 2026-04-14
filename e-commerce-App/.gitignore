@@ -29,3 +29,11 @@ build/
 *.njsproj
 *.sln
 *.sw?
+# Ignore dependencies
+node_modules/
+
+# Ignore environment variables
+.env
+
+# Ignore logs
+*.log

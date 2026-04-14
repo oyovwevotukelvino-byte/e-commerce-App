@@ -74,13 +74,14 @@ function Cart() {
         <p>Discover amazing products and add them to your cart!</p>
 
         <div className="empty-suggestions">
-          <button style={{ marginRight: "10px" }}onClick={() => navigate("/")}>
-            🛍️ Browse Products
-          </button>
-          <button onClick={() => navigate("/products")}>
-            Featured Deals
-          </button>
-        </div>
+         <button className="btn btn-browse" onClick={() => navigate("/")}>
+         🛍️ Browse Products
+         </button>
+         <button className="btn btn-featured" onClick={() => navigate("/products")}>
+          Featured Deals
+        </button>
+       </div>
+
       </div>
     );
   }
@@ -123,28 +124,28 @@ function Cart() {
                   )}
 
                   <div className="cart-item-actions">
-                    <div className="quantity-controls">
-                      <button
-                        onClick={() => decreaseQty(item.id)}
-                        disabled={item.quantity <= 1}
+                   <div className="quantity-controls">
+                    <button
+                      onClick={() => decreaseQty(item.id)}
+                      disabled={item.quantity <= 1}
                       >
-                        <Minus size={16} />
-                      </button>
-
-                      <span style={{ marginRight: "10px" }}>{item.quantity}</span>
-
-                      <button
-                        style={{ marginRight: "10px" }}
-                        onClick={() => increaseQty(item.id)}
-                        disabled={item.quantity >= maxStock(item)}
-                      >
-                        <Plus size={16} />
-                      </button>
-                    </div>
-
-                    <button style={{ marginTop: "10px" }} onClick={() => removeFromCart(item.id)}>
-                      <Trash2 size={16} /> Remove
+                     <Minus size={16} />
                     </button>
+
+                   <span className="qty-display">{item.quantity}</span>
+
+                   <button
+                    onClick={() => increaseQty(item.id)}
+                    disabled={item.quantity >= maxStock(item)}
+                    >
+                    <Plus size={16} />
+                   </button>
+                </div>
+
+                  <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
+                  <Trash2 size={16} /> Remove
+                  </button>
+
                   </div>
                 </div>
 
@@ -211,13 +212,14 @@ function Cart() {
             🚚 Delivery in 2–4 days
           </p>
 
-          <button  onClick={() => navigate("/checkout")}>
-            Proceed to Checkout (${grandTotal.toFixed(2)})
-          </button>
+          <button className="checkout-btn" onClick={() => navigate("/checkout")}>
+  Proceed to Checkout (${grandTotal.toFixed(2)})
+</button>
 
-          <button style = {{ marginLeft: "10px" }}onClick={() => navigate("/")}>
-            ← Continue Shopping
-          </button>
+<button className="continue-btn" onClick={() => navigate("/")}>
+  ← Continue Shopping
+</button>
+
         </div>
 
       </div>
