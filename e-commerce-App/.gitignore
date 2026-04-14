@@ -24,16 +24,9 @@ build/
 !.vscode/extensions.json
 .idea/
 .DS_Store
-*.suogit status
+
+# Misc
+*.sw?
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
-# Ignore dependencies
-node_modules/
-
-# Ignore environment variables
-.env
-
-# Ignore logs
-*.log
