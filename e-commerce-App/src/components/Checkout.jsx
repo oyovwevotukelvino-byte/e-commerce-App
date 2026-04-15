@@ -26,10 +26,10 @@ const handleCheckout = async () => {
   setLoading(true);
 
   try {
-    const healthCheck = await fetch("/api/health");
+    const healthCheck = await fetch("https://e-commerce-app-jue6.onrender.com/api/health");
     if (!healthCheck.ok) throw new Error("Server is not responding");
 
-    const response = await fetch("/api/payment/initialize", {
+    const response = await fetch("https://e-commerce-app-jue6.onrender.com/api/payment/initialize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, amount: total, name }),
@@ -52,14 +52,14 @@ const handleCheckout = async () => {
       currency: "NGN",
       ref: data.data.reference, // ensure backend returns this
 
-      callback: function(response) {
-        (async () => {
-          try {
-            const verifyResponse = await fetch("/api/payment/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ reference: response.reference }),
-            });
+      callback: function(paystackResponse) {
+       (async () => {
+      try {
+      const verifyResponse = await fetch("https://e-commerce-app-jue6.onrender.com/api/payment/verify", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ reference: paystackResponse.reference }),
+        });
             const verifyData = await verifyResponse.json();
             if (verifyData.success) {
               setPaymentSuccess(true);
