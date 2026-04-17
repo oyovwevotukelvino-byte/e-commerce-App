@@ -3,6 +3,7 @@ import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Lock, CheckCircle, ShoppingBag } from "lucide-react";
 import "../App.css";
+console.log("NEW BUILD VERSION 2");
 
 function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
@@ -28,7 +29,7 @@ function Checkout() {
      alert("App configuration error. Please try again later.");
    }
    console.log("API_URL:", API_URL);
-   
+
     if (!email || !name) {
       alert("Please enter your email and name");
       return;
