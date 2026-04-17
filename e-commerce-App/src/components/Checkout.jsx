@@ -17,77 +17,93 @@ function Checkout() {
     0
   );
 
-const handleCheckout = async () => {
-  if (!email || !name) {
-    alert("Please enter your email and name");
-    return;
-  }
+  // Vite environment variable
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  setLoading(true);
+   
+  const handleCheckout = async () => {
 
-  try {
-    const healthCheck = await fetch("https://e-commerce-app-jue6.onrender.com/api/health");
-    if (!healthCheck.ok) throw new Error("Server is not responding");
-
-    const response = await fetch("https://e-commerce-app-jue6.onrender.com/api/payment/initialize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, amount: total, name }),
-    });
-
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-    const data = await response.json();
-    console.log("Payment initialization response:", data);
-
-    if (!window.PaystackPop) {
-      alert("Payment system failed to load. Please refresh.");
-      setLoading(false);
+    if (!API_URL) {
+     console.error("API_URL is not defined");
+     alert("App configuration error. Please try again later.");
+   }
+   console.log("API_URL:", API_URL);
+   
+    if (!email || !name) {
+      alert("Please enter your email and name");
       return;
     }
 
-    const handler = window.PaystackPop.setup({
-      key: "pk_test_b0f1eeeeb674e53a61ff042c77e5127b5ff6626d", // public key
-      email,
-      amount: Math.round(total * 100), // convert to kobo
-      currency: "NGN",
-      ref: data.data.reference, // ensure backend returns this
+    setLoading(true);
 
-      callback: function(paystackResponse) {
-       (async () => {
-      try {
-      const verifyResponse = await fetch("https://e-commerce-app-jue6.onrender.com/api/payment/verify", {
-           method: "POST",
-           headers: { "Content-Type": "application/json" },
-           body: JSON.stringify({ reference: paystackResponse.reference }),
-        });
-            const verifyData = await verifyResponse.json();
-            if (verifyData.success) {
-              setPaymentSuccess(true);
-              clearCart();
-            } else {
-              alert("Payment verification failed.");
-            }
-          } catch (err) {
-            console.error("Verification error:", err);
-            alert("Verification failed.");
-          }
-          setLoading(false);
-        })();
-      },
+    try {
+      // Health check
+      const healthCheck = await fetch(`${API_URL}/api/health`);
+      if (!healthCheck.ok) throw new Error("Server is not responding");
 
-      onClose: function() {
+      // Initialize payment
+      const response = await fetch(`${API_URL}/api/payment/initialize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, amount: total, name }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+     throw new Error(data.message || `Server error: ${response.status}`);
+     }
+      console.log("Payment initialization response:", data);
+
+      if (!window.PaystackPop) {
+        alert("Payment system failed to load. Please refresh.");
         setLoading(false);
-        alert("Payment window closed.");
-      },
-    });
+        return;
+      }
 
-    handler.openIframe();
-  } catch (error) {
-    console.error("Payment error:", error);
-    alert("Payment failed: " + error.message);
-    setLoading(false);
-  }
-};
+      const handler = window.PaystackPop.setup({
+        key: "pk_test_b0f1eeeeb674e53a61ff042c77e5127b5ff6626d", // public key
+        email,
+        amount: Math.round(total * 100), // convert to kobo
+        currency: "NGN",
+        ref: data?.data?.reference,// ensure backend returns this
+
+        callback: function (paystackResponse) {
+          (async () => {
+            try {
+              const verifyResponse = await fetch(`${API_URL}/api/payment/verify`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reference: paystackResponse.reference }),
+              });
+              const verifyData = await verifyResponse.json();
+              if (verifyData.success) {
+                setPaymentSuccess(true);
+                clearCart();
+              } else {
+                alert("Payment verification failed.");
+              }
+            } catch (err) {
+              console.error("Verification error:", err);
+              alert("Verification failed.");
+            }
+            setLoading(false);
+          })();
+        },
+
+        onClose: function () {
+          setLoading(false);
+          alert("Payment window closed.");
+        },
+      });
+
+      handler.openIframe();
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Payment failed: " + error.message);
+      setLoading(false);
+    }
+  };
 
   if (cart.length === 0 && !paymentSuccess) {
     return (
@@ -122,7 +138,7 @@ const handleCheckout = async () => {
     <div className="checkout-container">
       <div className="checkout-form">
         <h2><CreditCard size={24} /> Checkout</h2>
-        
+
         <div className="form-group">
           <label>Full Name</label>
           <input
@@ -153,7 +169,7 @@ const handleCheckout = async () => {
 
       <div className="order-summary">
         <h3>Order Summary</h3>
-        
+
         <div className="cart-items">
           {cart.map((item) => (
             <div key={item.id} className="cart-item">
@@ -185,8 +201,8 @@ const handleCheckout = async () => {
           <span>${total.toFixed(2)}</span>
         </div>
 
-        <button 
-          className="pay-button" 
+        <button
+          className="pay-button"
           onClick={handleCheckout}
           disabled={loading}
         >
