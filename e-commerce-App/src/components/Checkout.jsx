@@ -23,88 +23,75 @@ function Checkout() {
 
    
   const handleCheckout = async () => {
+  if (!email || !name) {
+    alert("Please enter your email and name");
+    return;
+  }
 
-    if (!API_URL) {
-     console.error("API_URL is not defined");
-     alert("App configuration error. Please try again later.");
-   }
-   console.log("API_URL:", API_URL);
+  setLoading(true);
 
-    if (!email || !name) {
-      alert("Please enter your email and name");
+  try {
+    const response = await fetch(`${API_URL}/api/payment/initialize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, amount: total, name }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `Server error: ${response.status}`);
+    }
+
+    if (!window.PaystackPop) {
+      alert("Payment system failed to load. Please refresh.");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
+    const handler = window.PaystackPop.setup({
+      key: "pk_test_b0f1eeeeb674e53a61ff042c77e5127b5ff6626d",
+      email,
+      amount: Math.round(total * 100),
+      currency: "NGN",
+      ref: data?.data?.data?.reference, // ✅ fixed path
 
-    try {
-      // Health check
-      const healthCheck = await fetch(`${API_URL}/api/health`);
-      if (!healthCheck.ok) throw new Error("Server is not responding");
-
-      // Initialize payment
-      const response = await fetch(`${API_URL}/api/payment/initialize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, amount: total, name }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-     throw new Error(data.message || `Server error: ${response.status}`);
-     }
-      console.log("Payment initialization response:", data);
-
-      if (!window.PaystackPop) {
-        alert("Payment system failed to load. Please refresh.");
-        setLoading(false);
-        return;
-      }
-
-      const handler = window.PaystackPop.setup({
-        key: "pk_test_b0f1eeeeb674e53a61ff042c77e5127b5ff6626d", // public key
-        email,
-        amount: Math.round(total * 100), // convert to kobo
-        currency: "NGN",
-        ref: data?.data?.reference,// ensure backend returns this
-
-        callback: function (paystackResponse) {
-          (async () => {
-            try {
-              const verifyResponse = await fetch(`${API_URL}/api/payment/verify`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ reference: paystackResponse.reference }),
-              });
-              const verifyData = await verifyResponse.json();
-              if (verifyData.success) {
-                setPaymentSuccess(true);
-                clearCart();
-              } else {
-                alert("Payment verification failed.");
-              }
-            } catch (err) {
-              console.error("Verification error:", err);
-              alert("Verification failed.");
+      callback: function (paystackResponse) {
+        (async () => {
+          try {
+            const verifyResponse = await fetch(`${API_URL}/api/payment/verify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ reference: paystackResponse.reference }),
+            });
+            const verifyData = await verifyResponse.json();
+            if (verifyData.success) {
+              setPaymentSuccess(true);
+              clearCart();
+            } else {
+              alert("Payment verification failed.");
             }
-            setLoading(false);
-          })();
-        },
-
-        onClose: function () {
+          } catch (err) {
+            console.error("Verification error:", err);
+            alert("Verification failed.");
+          }
           setLoading(false);
-          alert("Payment window closed.");
-        },
-      });
+        })();
+      },
 
-      handler.openIframe();
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert("Payment failed: " + error.message);
-      setLoading(false);
-    }
-  };
+      onClose: function () {
+        setLoading(false);
+        alert("Payment window closed.");
+      },
+    });
+
+    handler.openIframe();
+  } catch (error) {
+    console.error("Payment error:", error);
+    alert("Payment failed: " + error.message);
+    setLoading(false);
+  }
+};
 
   if (cart.length === 0 && !paymentSuccess) {
     return (
