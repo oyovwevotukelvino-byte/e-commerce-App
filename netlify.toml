@@ -1,0 +1,7 @@
+[build]
+  base = "e-commerce-App"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_API_URL = "https://e-commerce-app-jue6.onrender.com"
