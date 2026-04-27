@@ -19,7 +19,8 @@ function Checkout() {
   );
 
   // Vite environment variable
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL || "https://e-commerce-app-jue6.onrender.com";
+  console.log("API_URL is:", API_URL);
 
    
   const handleCheckout = async () => {
@@ -48,7 +49,7 @@ function Checkout() {
       setLoading(false);
       return;
     }
-
+     
     const handler = window.PaystackPop.setup({
       key: "pk_test_b0f1eeeeb674e53a61ff042c77e5127b5ff6626d",
       email,
