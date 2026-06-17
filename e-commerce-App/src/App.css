@@ -1,6 +1,44 @@
 /* ================================
    PROFESSIONAL NAVBAR
    ================================ */
+   .password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 3.5rem; /* space for icon */
+  box-sizing: border-box;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #111827;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+}
 .navbar {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   padding: 12px 30px;
@@ -1761,6 +1799,7 @@ input[type="text"]:focus {
     font-size: 14px;
   }
 }
+
 .login {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   display: flex;
@@ -2437,7 +2476,7 @@ input[type="text"]:focus {
 
   .login-inputs input {
     width: 100%;
-    padding: 14px 5px;
+    padding: 14px 0px;
     font-size: 15px;
     border-radius: 10px;
     margin: 8px 0;
